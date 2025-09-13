@@ -71,25 +71,26 @@
   </div>
 
   <script type="module">
-    // import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword 
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    // Import Firebase modules you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-    // 🔥 Paste your own Firebase config here:
+    // Your Firebase config (yours pasted here)
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
+      authDomain: "school-website-1a24c.firebaseapp.com",
+      projectId: "school-website-1a24c",
+      storageBucket: "school-website-1a24c.firebasestorage.app",
+      messagingSenderId: "235324084724",
+      appId: "1:235324084724:web:58b1945a75bf21da90e9a1",
+      measurementId: "G-JGR7GRPL08"
     };
 
-    // init
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
@@ -105,6 +106,8 @@
         .then(userCredential => {
           message.textContent = "Login successful! Welcome " + userCredential.user.email;
           message.style.color = "green";
+          // optionally redirect to profile.html
+          // window.location.href = "profile.html";
         })
         .catch(error => {
           message.textContent = error.message;
