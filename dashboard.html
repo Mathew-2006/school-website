@@ -16,6 +16,24 @@
       color: white;
       padding: 20px;
       text-align: center;
+      position: relative;
+    }
+
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: #e74c3c;
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background: #c0392b;
     }
 
     .container {
@@ -39,20 +57,77 @@
       color: #3498db;
     }
 
-    .logout-btn {
-      background: #e74c3c;
+    .edit-btn {
+      display: inline-block;
+      background: #2ecc71;
       border: none;
       color: #fff;
-      padding: 10px 15px;
+      padding: 8px 12px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
       margin-top: 10px;
     }
 
-    .logout-btn:hover {
-      background: #c0392b;
+    .edit-btn:hover {
+      background: #27ae60;
     }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+    }
+
+    .modal-content label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .modal-content input, .modal-content select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .modal-content button {
+      margin-top: 15px;
+      padding: 10px;
+      background: #3498db;
+      border: none;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background: #2980b9;
+    }
+
+    .close-btn {
+      background: #ccc !important;
+      color: #000 !important;
+      margin-right: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -70,6 +145,7 @@
       <p><strong>Gender:</strong> <span id="gender"></span></p>
       <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
       <p><strong>Email:</strong> <span id="email"></span></p>
+      <button class="edit-btn" id="editProfileBtn">Edit Profile</button>
     </div>
 
     <div class="card">
@@ -88,10 +164,33 @@
     </div>
   </div>
 
+  <!-- Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <h3>Edit Profile</h3>
+      <form id="editForm">
+        <label for="editClass">Class</label>
+        <input type="text" id="editClass">
+
+        <label for="editGender">Gender</label>
+        <select id="editGender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+
+        <label for="editDob">Date of Birth</label>
+        <input type="date" id="editDob">
+
+        <button type="button" class="close-btn" id="closeModal">Cancel</button>
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
@@ -108,6 +207,12 @@
     const db = getFirestore(app);
 
     const logoutBtn = document.getElementById('logoutBtn');
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editModal = document.getElementById('editModal');
+    const closeModal = document.getElementById('closeModal');
+    const editForm = document.getElementById('editForm');
+
+    let currentUserId = null;
 
     logoutBtn.addEventListener('click', () => {
       signOut(auth).then(() => {
@@ -115,8 +220,17 @@
       });
     });
 
+    editProfileBtn.addEventListener('click', () => {
+      editModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+      editModal.style.display = 'none';
+    });
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        currentUserId = user.uid;
         const docRef = doc(db, "students", user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -129,12 +243,34 @@
           document.getElementById('email').textContent = data.email;
           document.getElementById('currentUnits').textContent = data.currentUnits || 0;
           document.getElementById('previousUnits').textContent = data.previousUnits || 0;
-        } else {
-          console.log("No student data found");
+
+          // Fill modal with existing data
+          document.getElementById('editClass').value = data.class || '';
+          document.getElementById('editGender').value = data.gender || 'Male';
+          document.getElementById('editDob').value = data.dob || '';
         }
       } else {
         window.location.href = 'index.html';
       }
+    });
+
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!currentUserId) return;
+
+      const newClass = document.getElementById('editClass').value;
+      const newGender = document.getElementById('editGender').value;
+      const newDob = document.getElementById('editDob').value;
+
+      await updateDoc(doc(db, "students", currentUserId), {
+        class: newClass,
+        gender: newGender,
+        dob: newDob
+      });
+
+      alert('Profile updated!');
+      editModal.style.display = 'none';
+      window.location.reload();
     });
   </script>
 </body>
