@@ -9,14 +9,26 @@
   <h2>Register</h2>
 
   <form id="registerForm">
-    <label>Email:</label><br />
-    <input type="email" id="email" required /><br /><br />
+    <label>Full Name:</label><br>
+    <input type="text" id="fullName" required><br><br>
 
-    <label>Password:</label><br />
-    <input type="password" id="password" required /><br /><br />
+    <label>Registration No:</label><br>
+    <input type="text" id="regNo" required><br><br>
 
-    <label>Class:</label><br />
-    <input type="text" id="class" placeholder="eg. Grade 8" required /><br /><br />
+    <label>Class:</label><br>
+    <input type="text" id="class" required><br><br>
+
+    <label>Gender:</label><br>
+    <input type="text" id="gender" required><br><br>
+
+    <label>Date of Birth:</label><br>
+    <input type="text" id="dob" placeholder="dd/mm/yyyy" required><br><br>
+
+    <label>Email:</label><br>
+    <input type="email" id="email" required><br><br>
+
+    <label>Password:</label><br>
+    <input type="password" id="password" required><br><br>
 
     <button type="submit">Register</button>
   </form>
@@ -40,26 +52,35 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const registerForm = document.getElementById('registerForm');
-
-    registerForm.addEventListener('submit', async (e) => {
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const fullName = document.getElementById('fullName').value;
+      const regNo = document.getElementById('regNo').value;
+      const className = document.getElementById('class').value;
+      const gender = document.getElementById('gender').value;
+      const dob = document.getElementById('dob').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const userClass = document.getElementById('class').value;
 
       try {
+        // Create user in Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // save extra info to Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          email: user.email,
-          class: userClass
+        // Create student doc in Firestore
+        await setDoc(doc(db, "students", user.uid), {
+          fullName: fullName,
+          regNo: regNo,
+          class: className,
+          gender: gender,
+          dob: dob,
+          currentUnits: 0,
+          previousUnits: 0,
+          email: email
         });
 
-        alert("Registered successfully!");
-        window.location.href = "profile.html"; // redirect to profile page
+        // Redirect to dashboard
+        window.location.href = "dashboard.html";
       } catch (error) {
         alert(error.message);
       }
