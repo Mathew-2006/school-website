@@ -35,14 +35,16 @@
 </head>
 <body>
   <div class="profile-card">
-    <h2>Welcome, <span id="userEmail"></span></h2>
-    <p>This is your student profile page.</p>
+    <h2>Welcome, <span id="userName"></span></h2>
+    <p>Email: <span id="userEmail"></span></p>
+    <p>Class: <span id="userClass"></span></p>
     <button id="logoutBtn">Log out</button>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
@@ -56,22 +58,28 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Check if user is logged in
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        document.getElementById('userEmail').textContent = user.email;
+        const docRef = doc(db, "students", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById('userName').textContent = data.name;
+          document.getElementById('userEmail').textContent = data.email;
+          document.getElementById('userClass').textContent = data.class;
+        } else {
+          // fallback if no doc
+          document.getElementById('userName').textContent = user.email;
+        }
       } else {
-        // No user -> back to login
         window.location.href = "login.html";
       }
     });
 
-    // Logout button
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      signOut(auth).then(() => {
-        window.location.href = "login.html";
-      });
+      signOut(auth).then(() => window.location.href = "login.html");
     });
   </script>
 </body>
