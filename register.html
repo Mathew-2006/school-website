@@ -1,37 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration</title>
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      border-radius: 8px;
+      padding: 30px;
+      width: 400px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #3498db;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .link a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    .link a:hover {
+      text-decoration: underline;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <h2>Register</h2>
+  <div class="container">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" required>
 
-  <form id="registerForm">
-    <label>Full Name:</label><br>
-    <input type="text" id="fullName" required><br><br>
+      <label for="regNo">Registration Number</label>
+      <input type="text" id="regNo" required>
 
-    <label>Registration No:</label><br>
-    <input type="text" id="regNo" required><br><br>
+      <label for="class">Class</label>
+      <input type="text" id="class" required>
 
-    <label>Class:</label><br>
-    <input type="text" id="class" required><br><br>
+      <label for="gender">Gender</label>
+      <select id="gender" required>
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
 
-    <label>Gender:</label><br>
-    <input type="text" id="gender" required><br><br>
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob" required>
 
-    <label>Date of Birth:</label><br>
-    <input type="text" id="dob" placeholder="dd/mm/yyyy" required><br><br>
+      <label for="email">Email</label>
+      <input type="email" id="email" required>
 
-    <label>Email:</label><br>
-    <input type="email" id="email" required><br><br>
+      <label for="password">Password</label>
+      <input type="password" id="password" required>
 
-    <label>Password:</label><br>
-    <input type="password" id="password" required><br><br>
-
-    <button type="submit">Register</button>
-  </form>
+      <button type="submit">Register</button>
+      <div class="error" id="errorMsg"></div>
+    </form>
+    <div class="link">
+      Already have an account? <a href="index.html">Login here</a>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
@@ -52,37 +126,39 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    const form = document.getElementById('registerForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      errorMsg.textContent = '';
+
       const fullName = document.getElementById('fullName').value;
       const regNo = document.getElementById('regNo').value;
-      const className = document.getElementById('class').value;
+      const studentClass = document.getElementById('class').value;
       const gender = document.getElementById('gender').value;
       const dob = document.getElementById('dob').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
       try {
-        // Create user in Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Create student doc in Firestore
         await setDoc(doc(db, "students", user.uid), {
           fullName: fullName,
           regNo: regNo,
-          class: className,
+          class: studentClass,
           gender: gender,
           dob: dob,
+          email: email,
           currentUnits: 0,
-          previousUnits: 0,
-          email: email
+          previousUnits: 0
         });
 
-        // Redirect to dashboard
-        window.location.href = "dashboard.html";
+        window.location.href = 'dashboard.html';
       } catch (error) {
-        alert(error.message);
+        errorMsg.textContent = error.message;
       }
     });
   </script>
