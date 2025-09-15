@@ -1,76 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #3498db;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .logout {
+      display: inline-block;
+      padding: 10px 15px;
+      background: #e74c3c;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+
+    .logout:hover {
+      background: #c0392b;
+    }
+  </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="logo">
-      <img src="logo.png" alt="School Logo">
-    </div>
-    <ul class="menu">
-      <li><i class="fa fa-home"></i> Dashboard</li>
-      <li><i class="fa fa-graduation-cap"></i> Graduation Links</li>
-      <li><i class="fa fa-receipt"></i> Fee Statement</li>
-      <li><i class="fa fa-credit-card"></i> Receipts</li>
-      <li><i class="fa fa-file-alt"></i> Fee Payment Letter</li>
-      <li><i class="fa fa-info-circle"></i> Household Information</li>
-      <li><i class="fa fa-book"></i> Units Registration</li>
-      <li><i class="fa fa-chalkboard-teacher"></i> Lecturers Evaluation</li>
-      <li><i class="fa fa-clipboard-list"></i> Industrial Attachment</li>
-      <li><i class="fa fa-id-card"></i> Exam Card</li>
-      <li><i class="fa fa-file"></i> Provisional Result Slip</li>
-    </ul>
-  </div>
+  <header>
+    <h1 id="welcomeText">Welcome, Student</h1>
+    <a href="#" id="logoutBtn" class="logout">Logout</a>
+  </header>
 
-  <div class="main-content">
-    <div class="topbar">
-      <div class="user-info">
-        <img class="avatar" src="avatar.png" alt="Profile">
-        <span id="userName">Student Name</span>
+  <div class="container">
+    <div class="cards">
+      <div class="card">
+        <h3>Personal Information</h3>
+        <p><strong>Name:</strong> <span id="fullName"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Reg No:</strong> <span id="regNo"></span></p>
+        <p><strong>Class:</strong> <span id="class"></span></p>
+        <p><strong>Gender:</strong> <span id="gender"></span></p>
+        <p><strong>DOB:</strong> <span id="dob"></span></p>
       </div>
-      <button id="logoutBtn" class="logout-btn">Log out</button>
-    </div>
 
-    <div class="content">
-      <h2>Dashboard</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Personal Information</h3>
-          <p><strong>Email:</strong> <span id="email"></span></p>
-          <p><strong>Reg No:</strong> CT201/XXXXX</p>
-          <p><strong>Campus:</strong> MAIN</p>
-          <p><strong>Gender:</strong> Male</p>
-          <p><strong>DOB:</strong> 22/09/2006</p>
-        </div>
+      <div class="card">
+        <h3>Registered Units (Current Sem)</h3>
+        <h1 id="currentUnits">0</h1>
+      </div>
 
-        <div class="card">
-          <h3>Registered Units (Current Sem)</h3>
-          <h1>7</h1>
-        </div>
-
-        <div class="card">
-          <h3>Units Registered (Previous Sems)</h3>
-          <h1>14</h1>
-        </div>
-
-        <div class="card">
-          <h3>Fee Payment</h3>
-          <p>Total Billed = Ksh.244,800.00</p>
-          <p>Total Paid = Ksh.171,960.00</p>
-          <p>Fee Balance = Ksh.72,840.00</p>
-        </div>
-
-        <div class="card">
-          <h3>Contact Information</h3>
-          <p><strong>Phone:</strong> 0708xxxxxxx</p>
-          <p><strong>Email:</strong> <span id="email2"></span></p>
-          <p><strong>Postal Address:</strong> 90</p>
-        </div>
+      <div class="card">
+        <h3>Units Registered (Previous Sems)</h3>
+        <h1 id="previousUnits">0</h1>
       </div>
     </div>
   </div>
@@ -78,6 +86,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
@@ -91,12 +100,33 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        document.getElementById('userName').textContent = user.email;
-        document.getElementById('email').textContent = user.email;
-        document.getElementById('email2').textContent = user.email;
+        // fetch student data
+        const docRef = doc(db, "students", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+
+          // Fill fields
+          document.getElementById('fullName').textContent = data.fullName || '';
+          document.getElementById('email').textContent = data.email || user.email;
+          document.getElementById('regNo').textContent = data.regNo || '';
+          document.getElementById('class').textContent = data.class || '';
+          document.getElementById('gender').textContent = data.gender || '';
+          document.getElementById('dob').textContent = data.dob || '';
+          document.getElementById('currentUnits').textContent = data.currentUnits || 0;
+          document.getElementById('previousUnits').textContent = data.previousUnits || 0;
+
+          // update welcome text
+          document.getElementById('welcomeText').textContent = `Welcome, ${data.fullName}`;
+        } else {
+          // fallback if no doc
+          document.getElementById('fullName').textContent = user.email;
+          document.getElementById('welcomeText').textContent = `Welcome, ${user.email}`;
+        }
       } else {
         window.location.href = 'index.html';
       }
