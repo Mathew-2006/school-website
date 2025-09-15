@@ -9,193 +9,133 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f4f6f8;
+      display: flex;
     }
-
-    header {
+    .sidebar {
+      width: 220px;
       background: #3498db;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      position: relative;
-    }
-
-    .logout-btn {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      background: #e74c3c;
-      border: none;
       color: #fff;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
+      height: 100vh;
+      padding-top: 30px;
+      position: fixed;
+      top: 0;
+      left: 0;
     }
-
-    .logout-btn:hover {
-      background: #c0392b;
+    .nav-links {
+      list-style: none;
+      padding: 0;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
+    .nav-links li {
+      margin-bottom: 10px;
     }
-
-    .card {
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 10px 20px;
+      transition: background 0.3s;
+    }
+    .nav-links a:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .main-content {
+      margin-left: 220px; /* same width as sidebar */
+      padding: 20px;
+      flex: 1;
+    }
+    section {
       background: #fff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
-    .card h3 {
-      margin-top: 0;
-      color: #3498db;
-    }
-
-    .edit-btn {
-      display: inline-block;
-      background: #2ecc71;
-      border: none;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    .edit-btn:hover {
-      background: #27ae60;
-    }
-
-    /* Modal */
-    .modal {
+    /* Password modal */
+    #passwordModal {
       display: none;
       position: fixed;
-      z-index: 10;
+      z-index: 999;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.4);
-      justify-content: center;
-      align-items: center;
+      background-color: rgba(0,0,0,0.5);
     }
-
-    .modal-content {
-      background: #fff;
+    #passwordModal .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
       padding: 20px;
       border-radius: 8px;
-      width: 400px;
+      width: 300px;
     }
-
-    .modal-content label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
+    .close {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
     }
-
-    .modal-content input, .modal-content select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .modal-content button {
-      margin-top: 15px;
-      padding: 10px;
+    .btn {
       background: #3498db;
-      border: none;
       color: #fff;
+      border: none;
+      padding: 8px 15px;
       border-radius: 4px;
       cursor: pointer;
     }
-
-    .modal-content button:hover {
+    .btn:hover {
       background: #2980b9;
-    }
-
-    .close-btn {
-      background: #ccc !important;
-      color: #000 !important;
-      margin-right: 10px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Welcome to the Student Dashboard</h1>
-    <button class="logout-btn" id="logoutBtn">Logout</button>
-  </header>
 
-  <div class="container">
-    <div class="card">
-      <h3>My Profile</h3>
-      <p><strong>Name:</strong> <span id="fullName"></span></p>
-      <p><strong>Reg No:</strong> <span id="regNo"></span></p>
-      <p><strong>Class:</strong> <span id="studentClass"></span></p>
-      <p><strong>Gender:</strong> <span id="gender"></span></p>
-      <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
-      <p><strong>Email:</strong> <span id="email"></span></p>
-      <button class="edit-btn" id="editProfileBtn">Edit Profile / Change Password</button>
-    </div>
-
-    <div class="card">
-      <h3>Current Units</h3>
-      <p><span id="currentUnits">0</span></p>
-    </div>
-
-    <div class="card">
-      <h3>Previous Units</h3>
-      <p><span id="previousUnits">0</span></p>
-    </div>
-
-    <div class="card">
-      <h3>Notifications</h3>
-      <p>No new notifications</p>
-    </div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <ul class="nav-links">
+      <li><a href="#dashboardSection">Dashboard</a></li>
+      <li><a href="#profileSection">My Profile</a></li>
+      <li><a href="#unitsSection">My Units</a></li>
+      <li><a href="#notificationsSection">Notifications</a></li>
+      <li><a href="#" id="logoutBtn">Logout</a></li>
+    </ul>
   </div>
 
-  <!-- Modal -->
-  <div class="modal" id="editModal">
+  <!-- Main Content -->
+  <div class="main-content">
+    <section id="dashboardSection">
+      <h1>Dashboard</h1>
+      <p>Welcome to your dashboard!</p>
+      <button class="btn" id="openPasswordModal">Change Password</button>
+    </section>
+
+    <section id="profileSection" style="display:none">
+      <h2>My Profile</h2>
+      <p>Your profile info will appear here.</p>
+    </section>
+
+    <section id="unitsSection" style="display:none">
+      <h2>My Units</h2>
+      <p>Units info here.</p>
+    </section>
+
+    <section id="notificationsSection" style="display:none">
+      <h2>Notifications</h2>
+      <p>Your notifications here.</p>
+    </section>
+  </div>
+
+  <!-- Password Modal -->
+  <div id="passwordModal">
     <div class="modal-content">
-      <h3>Edit Profile</h3>
-      <form id="editForm">
-        <label for="editClass">Class</label>
-        <input type="text" id="editClass">
-
-        <label for="editGender">Gender</label>
-        <select id="editGender">
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-
-        <label for="editDob">Date of Birth</label>
-        <input type="date" id="editDob">
-
-        <label for="editPassword">New Password</label>
-        <input type="password" id="editPassword" placeholder="Leave blank to keep current password">
-
-        <label for="editPasswordConfirm">Confirm New Password</label>
-        <input type="password" id="editPasswordConfirm" placeholder="Type the new password again">
-
-        <button type="button" class="close-btn" id="closeModal">Cancel</button>
-        <button type="submit">Save Changes</button>
-      </form>
+      <span class="close">&times;</span>
+      <h3>Change Password</h3>
+      <input type="password" id="newPassword" placeholder="New Password" style="width:100%;padding:8px;margin-bottom:10px;">
+      <button class="btn" id="changePasswordBtn">Change</button>
     </div>
   </div>
 
+  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
@@ -209,93 +149,54 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    const logoutBtn = document.getElementById('logoutBtn');
-    const editProfileBtn = document.getElementById('editProfileBtn');
-    const editModal = document.getElementById('editModal');
-    const closeModal = document.getElementById('closeModal');
-    const editForm = document.getElementById('editForm');
+    // Auth state
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      }
+    });
 
-    let currentUserId = null;
-
-    logoutBtn.addEventListener('click', () => {
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
       signOut(auth).then(() => {
-        window.location.href = 'index.html';
+        window.location.href = "login.html";
       });
     });
 
-    editProfileBtn.addEventListener('click', () => {
-      editModal.style.display = 'flex';
-    });
+    // Password modal
+    const modal = document.getElementById('passwordModal');
+    document.getElementById('openPasswordModal').onclick = () => modal.style.display = 'block';
+    document.querySelector('.close').onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
 
-    closeModal.addEventListener('click', () => {
-      editModal.style.display = 'none';
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUserId = user.uid;
-        const docRef = doc(db, "students", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          document.getElementById('fullName').textContent = data.fullName;
-          document.getElementById('regNo').textContent = data.regNo;
-          document.getElementById('studentClass').textContent = data.class;
-          document.getElementById('gender').textContent = data.gender;
-          document.getElementById('dob').textContent = data.dob;
-          document.getElementById('email').textContent = data.email;
-          document.getElementById('currentUnits').textContent = data.currentUnits || 0;
-          document.getElementById('previousUnits').textContent = data.previousUnits || 0;
-
-          // Fill modal with existing data
-          document.getElementById('editClass').value = data.class || '';
-          document.getElementById('editGender').value = data.gender || 'Male';
-          document.getElementById('editDob').value = data.dob || '';
-        }
+    // Change password
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+      const newPass = document.getElementById('newPassword').value;
+      const user = auth.currentUser;
+      if (user && newPass) {
+        updatePassword(user, newPass).then(() => {
+          alert("Password updated!");
+          modal.style.display = 'none';
+        }).catch(err => alert(err.message));
       } else {
-        window.location.href = 'index.html';
+        alert("Enter a password.");
       }
     });
 
-    editForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!currentUserId) return;
-
-      const newClass = document.getElementById('editClass').value;
-      const newGender = document.getElementById('editGender').value;
-      const newDob = document.getElementById('editDob').value;
-      const newPassword = document.getElementById('editPassword').value;
-      const confirmPassword = document.getElementById('editPasswordConfirm').value;
-
-      // basic check
-      if (newPassword.trim() !== '' && newPassword !== confirmPassword) {
-        alert('New password and confirm password do not match.');
-        return;
-      }
-
-      await updateDoc(doc(db, "students", currentUserId), {
-        class: newClass,
-        gender: newGender,
-        dob: newDob
+    // Navigation
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', e => {
+        const href = link.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          document.querySelectorAll('.main-content section').forEach(s => s.style.display = 'none');
+          const target = document.getElementById(href.substring(1));
+          if (target) target.style.display = 'block';
+        }
       });
-
-      // Only update password if field not empty
-      if (newPassword.trim() !== '') {
-        try {
-          await updatePassword(auth.currentUser, newPassword);
-          alert('Profile and password updated!');
-        } catch (err) {
-          alert('Profile updated but password change failed: ' + err.message);
-        }
-      } else {
-        alert('Profile updated!');
-      }
-
-      editModal.style.display = 'none';
-      window.location.reload();
     });
   </script>
+
 </body>
 </html>
