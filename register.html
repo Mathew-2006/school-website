@@ -1,52 +1,25 @@
-<!-- register.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Registration</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f3f3;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .register-box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      width: 350px;
-      text-align: center;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin-bottom: 15px;
-    }
-    button {
-      background-color: #0275d8;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+  <title>Register</title>
 </head>
 <body>
-  <div class="register-box">
-    <h2>Student Registration</h2>
-    <input type="text" id="name" placeholder="Full Name" />
-    <input type="text" id="class" placeholder="Class / Grade" />
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button id="registerBtn">Register</button>
-    <p>Already have an account? <a href="login.html">Log in</a></p>
-  </div>
+  <h2>Register</h2>
+
+  <form id="registerForm">
+    <label>Email:</label><br />
+    <input type="email" id="email" required /><br /><br />
+
+    <label>Password:</label><br />
+    <input type="password" id="password" required /><br /><br />
+
+    <label>Class:</label><br />
+    <input type="text" id="class" placeholder="eg. Grade 8" required /><br /><br />
+
+    <button type="submit">Register</button>
+  </form>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
@@ -67,26 +40,26 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    document.getElementById('registerBtn').addEventListener('click', async () => {
-      const name = document.getElementById('name').value;
-      const studentClass = document.getElementById('class').value;
+    const registerForm = document.getElementById('registerForm');
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      const userClass = document.getElementById('class').value;
 
       try {
-        // Create user in Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Save extra info in Firestore under "students" collection
-        await setDoc(doc(db, "students", user.uid), {
-          name: name,
-          class: studentClass,
-          email: email
+        // save extra info to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          class: userClass
         });
 
-        // Redirect to profile
-        window.location.href = "profile.html";
+        alert("Registered successfully!");
+        window.location.href = "profile.html"; // redirect to profile page
       } catch (error) {
         alert(error.message);
       }

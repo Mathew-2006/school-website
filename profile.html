@@ -1,41 +1,13 @@
-<!-- profile.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Student Profile</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f3f3f3;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .profile-card {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      text-align: center;
-      width: 350px;
-    }
-    button {
-      background-color: #d9534f;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-  </style>
+  <title>Profile</title>
 </head>
 <body>
-  <div class="profile-card">
-    <h2>Welcome, <span id="userName"></span></h2>
+  <div style="width: 300px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <h3>Welcome, <span id="welcomeEmail"></span></h3>
     <p>Email: <span id="userEmail"></span></p>
     <p>Class: <span id="userClass"></span></p>
     <button id="logoutBtn">Log out</button>
@@ -60,26 +32,31 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    const welcomeEmail = document.getElementById('welcomeEmail');
+    const emailSpan = document.getElementById('userEmail');
+    const classSpan = document.getElementById('userClass');
+    const logoutBtn = document.getElementById('logoutBtn');
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const docRef = doc(db, "students", user.uid);
+        welcomeEmail.textContent = user.email;
+        emailSpan.textContent = user.email;
+
+        const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          document.getElementById('userName').textContent = data.name;
-          document.getElementById('userEmail').textContent = data.email;
-          document.getElementById('userClass').textContent = data.class;
+          classSpan.textContent = data.class || "Not set";
         } else {
-          // fallback if no doc
-          document.getElementById('userName').textContent = user.email;
+          classSpan.textContent = "Not set";
         }
       } else {
-        window.location.href = "login.html";
+        window.location.href = "login.html"; // redirect if logged out
       }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      signOut(auth).then(() => window.location.href = "login.html");
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth);
     });
   </script>
 </body>
