@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin – Add Units</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; }
+    header { background: #3498db; color: white; padding: 20px; text-align: center; }
+    .container { max-width: 600px; margin: 30px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 15px; padding: 10px; background: #3498db; border: none; color: #fff; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 8px; border: 1px solid #ddd; }
+    th { background: #3498db; color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Panel – Add Units</h1>
+  </header>
+
+  <div class="container">
+    <h3>Add a New Unit</h3>
+    <input type="text" id="unitName" placeholder="Unit Name">
+    <input type="text" id="unitCode" placeholder="Unit Code">
+    <input type="text" id="semester" placeholder="Semester e.g. 1 or 2">
+    <button id="addUnitBtn">Add Unit</button>
+
+    <h3>All Units</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Unit Name</th>
+          <th>Code</th>
+          <th>Semester</th>
+        </tr>
+      </thead>
+      <tbody id="unitsTableBody"></tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
+      authDomain: "school-website-1a24c.firebaseapp.com",
+      projectId: "school-website-1a24c",
+      storageBucket: "school-website-1a24c.firebasestorage.app",
+      messagingSenderId: "235324084724",
+      appId: "1:235324084724:web:58b1945a75bf21da90e9a1",
+      measurementId: "G-JGR7GRPL08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const addUnitBtn = document.getElementById('addUnitBtn');
+    const unitNameInput = document.getElementById('unitName');
+    const unitCodeInput = document.getElementById('unitCode');
+    const semesterInput = document.getElementById('semester');
+    const unitsTableBody = document.getElementById('unitsTableBody');
+
+    // Function to load all units
+    async function loadUnits() {
+      unitsTableBody.innerHTML = '';
+      const querySnapshot = await getDocs(collection(db, "units"));
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        unitsTableBody.innerHTML += `
+          <tr>
+            <td>${data.unitName}</td>
+            <td>${data.unitCode}</td>
+            <td>${data.semester}</td>
+          </tr>
+        `;
+      });
+    }
+
+    addUnitBtn.addEventListener('click', async () => {
+      const unitName = unitNameInput.value.trim();
+      const unitCode = unitCodeInput.value.trim();
+      const semester = semesterInput.value.trim();
+
+      if (!unitName || !unitCode || !semester) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      await addDoc(collection(db, 'units'), {
+        unitName,
+        unitCode,
+        semester
+      });
+
+      alert('Unit added!');
+      unitNameInput.value = '';
+      unitCodeInput.value = '';
+      semesterInput.value = '';
+      loadUnits();
+    });
+
+    loadUnits();
+  </script>
+</body>
+</html>
