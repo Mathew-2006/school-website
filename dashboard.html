@@ -1,85 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Dashboard</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
     }
 
     header {
       background: #3498db;
-      color: #fff;
+      color: white;
       padding: 20px;
       text-align: center;
     }
 
     .container {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .cards {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
     }
 
     .card {
       background: #fff;
-      border-radius: 8px;
       padding: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .logout {
-      display: inline-block;
-      padding: 10px 15px;
+    .card h3 {
+      margin-top: 0;
+      color: #3498db;
+    }
+
+    .logout-btn {
       background: #e74c3c;
+      border: none;
       color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 20px;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
     }
 
-    .logout:hover {
+    .logout-btn:hover {
       background: #c0392b;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1 id="welcomeText">Welcome, Student</h1>
-    <a href="#" id="logoutBtn" class="logout">Logout</a>
+    <h1>Welcome to the Student Dashboard</h1>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
   </header>
 
   <div class="container">
-    <div class="cards">
-      <div class="card">
-        <h3>Personal Information</h3>
-        <p><strong>Name:</strong> <span id="fullName"></span></p>
-        <p><strong>Email:</strong> <span id="email"></span></p>
-        <p><strong>Reg No:</strong> <span id="regNo"></span></p>
-        <p><strong>Class:</strong> <span id="class"></span></p>
-        <p><strong>Gender:</strong> <span id="gender"></span></p>
-        <p><strong>DOB:</strong> <span id="dob"></span></p>
-      </div>
+    <div class="card">
+      <h3>My Profile</h3>
+      <p><strong>Name:</strong> <span id="fullName"></span></p>
+      <p><strong>Reg No:</strong> <span id="regNo"></span></p>
+      <p><strong>Class:</strong> <span id="studentClass"></span></p>
+      <p><strong>Gender:</strong> <span id="gender"></span></p>
+      <p><strong>Date of Birth:</strong> <span id="dob"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+    </div>
 
-      <div class="card">
-        <h3>Registered Units (Current Sem)</h3>
-        <h1 id="currentUnits">0</h1>
-      </div>
+    <div class="card">
+      <h3>Current Units</h3>
+      <p><span id="currentUnits">0</span></p>
+    </div>
 
-      <div class="card">
-        <h3>Units Registered (Previous Sems)</h3>
-        <h1 id="previousUnits">0</h1>
-      </div>
+    <div class="card">
+      <h3>Previous Units</h3>
+      <p><span id="previousUnits">0</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Notifications</h3>
+      <p>No new notifications</p>
     </div>
   </div>
 
@@ -102,40 +107,34 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = 'index.html';
+      });
+    });
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // fetch student data
         const docRef = doc(db, "students", user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-
-          // Fill fields
-          document.getElementById('fullName').textContent = data.fullName || '';
-          document.getElementById('email').textContent = data.email || user.email;
-          document.getElementById('regNo').textContent = data.regNo || '';
-          document.getElementById('class').textContent = data.class || '';
-          document.getElementById('gender').textContent = data.gender || '';
-          document.getElementById('dob').textContent = data.dob || '';
+          document.getElementById('fullName').textContent = data.fullName;
+          document.getElementById('regNo').textContent = data.regNo;
+          document.getElementById('studentClass').textContent = data.class;
+          document.getElementById('gender').textContent = data.gender;
+          document.getElementById('dob').textContent = data.dob;
+          document.getElementById('email').textContent = data.email;
           document.getElementById('currentUnits').textContent = data.currentUnits || 0;
           document.getElementById('previousUnits').textContent = data.previousUnits || 0;
-
-          // update welcome text
-          document.getElementById('welcomeText').textContent = `Welcome, ${data.fullName}`;
         } else {
-          // fallback if no doc
-          document.getElementById('fullName').textContent = user.email;
-          document.getElementById('welcomeText').textContent = `Welcome, ${user.email}`;
+          console.log("No student data found");
         }
       } else {
         window.location.href = 'index.html';
       }
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      signOut(auth).then(() => {
-        window.location.href = 'index.html';
-      });
     });
   </script>
 </body>
