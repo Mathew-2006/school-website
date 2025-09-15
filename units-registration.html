@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Units Registration</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
+
+    header {
+      background: #3498db;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: #e74c3c;
+      border: none;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background: #c0392b;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #3498db;
+    }
+
+    .unit-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .unit-list li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+    }
+
+    .unit-list label {
+      margin-left: 8px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #3498db;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 20px 0;
+    }
+
+    .btn:hover {
+      background: #2980b9;
+    }
+
+    .message {
+      padding: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Units Registration</h1>
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </header>
+
+  <div class="container">
+    <h2>Available Units</h2>
+    <div id="registrationSection">
+      <ul class="unit-list" id="unitList"></ul>
+      <button class="btn" id="submitBtn">Submit Registration</button>
+    </div>
+    <div id="messageSection" class="message"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5_DYPwO8KMPFodQnwH-o9_Z4kYwwjVWE",
+      authDomain: "school-website-1a24c.firebaseapp.com",
+      projectId: "school-website-1a24c",
+      storageBucket: "school-website-1a24c.firebasestorage.app",
+      messagingSenderId: "235324084724",
+      appId: "1:235324084724:web:58b1945a75bf21da90e9a1",
+      measurementId: "G-JGR7GRPL08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth).then(() => window.location.href = 'index.html');
+    });
+
+    const unitList = document.getElementById('unitList');
+    const submitBtn = document.getElementById('submitBtn');
+    const registrationSection = document.getElementById('registrationSection');
+    const messageSection = document.getElementById('messageSection');
+
+    let currentUserId = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUserId = user.uid;
+
+        // Check if already registered
+        const studentRef = doc(db, "students", currentUserId);
+        const studentSnap = await getDoc(studentRef);
+
+        if (studentSnap.exists()) {
+          const studentData = studentSnap.data();
+          if (studentData.registeredUnits && studentData.registeredUnits.length > 0) {
+            registrationSection.style.display = 'none';
+            // show message
+            messageSection.innerHTML = `
+              <p>You have already registered for units:</p>
+              <ul>${studentData.registeredUnits.map(u => `<li>${u}</li>`).join('')}</ul>
+            `;
+            return;
+          }
+        }
+
+        // Load units
+        const unitsSnap = await getDocs(collection(db, "units"));
+        unitList.innerHTML = '';
+        unitsSnap.forEach(docSnap => {
+          const unit = docSnap.data();
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <input type="checkbox" value="${docSnap.id}">
+            <label>${unit.name} (${unit.code})</label>
+          `;
+          unitList.appendChild(li);
+        });
+
+        submitBtn.addEventListener('click', async () => {
+          const selected = [...unitList.querySelectorAll('input[type=checkbox]:checked')].map(cb => cb.value);
+          if (selected.length === 0) {
+            alert('Please select at least one unit');
+            return;
+          }
+
+          await updateDoc(studentRef, {
+            registeredUnits: selected
+          });
+
+          alert('Units registered successfully!');
+          window.location.reload();
+        });
+
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>
