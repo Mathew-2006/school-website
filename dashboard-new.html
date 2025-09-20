@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - School Portal</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <!-- Inline styles for dashboard-specific styling -->
+  <style>
+    /* Dashboard-specific styles */
+    .profile-content {
+      display: grid;
+      gap: var(--spacing-lg);
+    }
+
+    .profile-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-md);
+      background: var(--light-gray);
+      border-radius: var(--border-radius-md);
+    }
+
+    .profile-label {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .profile-value {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .profile-actions {
+      margin-top: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .units-content {
+      text-align: center;
+    }
+
+    .units-grid {
+      display: grid;
+      gap: var(--spacing-md);
+      margin: var(--spacing-lg) 0;
+    }
+
+    .units-grid p {
+      padding: var(--spacing-lg);
+      background: var(--light-gray);
+      border-radius: var(--border-radius-md);
+      margin: 0;
+    }
+
+    .text-success {
+      color: var(--success-color);
+      font-weight: 500;
+    }
+
+    .text-info {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+
+    .notifications-content {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-bottom: 1px solid #e1e5e9;
+      transition: background-color 0.2s ease;
+    }
+
+    .notification-item:hover {
+      background-color: var(--light-gray);
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-icon {
+      font-size: var(--font-size-xl);
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-content h4 {
+      margin: 0 0 var(--spacing-xs) 0;
+      color: var(--text-primary);
+    }
+
+    .notification-content p {
+      margin: 0 0 var(--spacing-xs) 0;
+      color: var(--text-secondary);
+    }
+
+    .no-units {
+      text-align: center;
+      padding: var(--spacing-xxl);
+      color: var(--text-muted);
+    }
+
+    .no-notifications {
+      text-align: center;
+      padding: var(--spacing-xxl);
+      color: var(--text-muted);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .profile-field {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+      }
+
+      .profile-label {
+        font-size: var(--font-size-sm);
+      }
+
+      .notification-item {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Include components -->
+  <div id="headerContainer"></div>
+  <div id="sidebarContainer"></div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div id="modalContainer"></div>
+
+    <div class="main-body">
+      <!-- Include sections -->
+      <div id="profileSectionContainer"></div>
+      <div id="unitsSectionContainer"></div>
+      <div id="notificationsSectionContainer"></div>
+    </div>
+  </div>
+
+  <!-- External JavaScript Modules -->
+  <script src="utils/firebase-config.js"></script>
+  <script src="utils/auth-service.js"></script>
+  <script src="utils/database-service.js"></script>
+  <script src="utils/ui-components.js"></script>
+  <script src="utils/dashboard-functions.js"></script>
+
+  <script>
+    // Load components dynamically
+    async function loadComponents() {
+      try {
+        // Load header
+        const headerResponse = await fetch('components/header.html');
+        const headerHtml = await headerResponse.text();
+        document.getElementById('headerContainer').innerHTML = headerHtml;
+
+        // Load sidebar
+        const sidebarResponse = await fetch('components/sidebar.html');
+        const sidebarHtml = await sidebarResponse.text();
+        document.getElementById('sidebarContainer').innerHTML = sidebarHtml;
+
+        // Load profile section
+        const profileResponse = await fetch('components/profile-section.html');
+        const profileHtml = await profileResponse.text();
+        document.getElementById('profileSectionContainer').innerHTML = profileHtml;
+
+        // Load units section
+        const unitsResponse = await fetch('components/units-section.html');
+        const unitsHtml = await unitsResponse.text();
+        document.getElementById('unitsSectionContainer').innerHTML = unitsHtml;
+
+        // Load notifications section
+        const notificationsResponse = await fetch('components/notifications-section.html');
+        const notificationsHtml = await notificationsResponse.text();
+        document.getElementById('notificationsSectionContainer').innerHTML = notificationsHtml;
+
+        // Load modals
+        const passwordModalResponse = await fetch('components/password-modal.html');
+        const passwordModalHtml = await passwordModalResponse.text();
+
+        const editProfileModalResponse = await fetch('components/edit-profile-modal.html');
+        const editProfileModalHtml = await editProfileModalResponse.text();
+
+        document.getElementById('modalContainer').innerHTML = passwordModalHtml + editProfileModalHtml;
+
+        // Show profile section by default
+        navigateToSection('profile');
+
+      } catch (error) {
+        console.error('Error loading components:', error);
+        UI.showError('Failed to load dashboard components');
+      }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadComponents();
+      await initializeDashboard();
+    });
+  </script>
+</body>
+</html>

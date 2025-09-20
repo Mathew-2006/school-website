@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frontend Demo - School Portal</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <style>
+    .demo-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: var(--spacing-xxl);
+      padding: var(--spacing-lg);
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: var(--text-white);
+      border-radius: var(--border-radius-lg);
+    }
+
+    .demo-title {
+      font-size: var(--font-size-3xl);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .demo-subtitle {
+      font-size: var(--font-size-lg);
+      opacity: 0.9;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xxl);
+    }
+
+    .demo-card {
+      background: var(--bg-secondary);
+      border-radius: var(--border-radius-lg);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-md);
+      transition: transform 0.2s ease;
+    }
+
+    .demo-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .demo-card-icon {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-md);
+      display: block;
+      text-align: center;
+    }
+
+    .demo-card-title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-primary);
+    }
+
+    .demo-card-description {
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .demo-btn {
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--primary-color);
+      color: var(--text-white);
+      text-decoration: none;
+      border-radius: var(--border-radius-md);
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+
+    .demo-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .demo-features {
+      background: var(--light-gray);
+      padding: var(--spacing-xxl);
+      border-radius: var(--border-radius-lg);
+      margin-bottom: var(--spacing-xxl);
+    }
+
+    .demo-features-title {
+      font-size: var(--font-size-2xl);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    .demo-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .demo-feature {
+      text-align: center;
+      padding: var(--spacing-md);
+    }
+
+    .demo-feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-sm);
+      display: block;
+    }
+
+    .demo-feature-title {
+      font-weight: 600;
+      margin-bottom: var(--spacing-xs);
+      color: var(--text-primary);
+    }
+
+    .demo-feature-description {
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .demo-footer {
+      text-align: center;
+      padding: var(--spacing-lg);
+      background: var(--dark-gray);
+      color: var(--text-white);
+      border-radius: var(--border-radius-lg);
+    }
+
+    @media (max-width: 768px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1 class="demo-title">🎓 School Portal Frontend</h1>
+      <p class="demo-subtitle">Modern, Responsive, and Modular Design</p>
+    </div>
+
+    <div class="demo-grid">
+      <div class="demo-card">
+        <span class="demo-card-icon">🏠</span>
+        <h3 class="demo-card-title">Landing Page</h3>
+        <p class="demo-card-description">Beautiful welcome page with hero section, feature showcase, and statistics display.</p>
+        <a href="index-new.html" class="demo-btn">View Landing Page</a>
+      </div>
+
+      <div class="demo-card">
+        <span class="demo-card-icon">🔐</span>
+        <h3 class="demo-card-title">Authentication</h3>
+        <p class="demo-card-description">Secure login and registration with form validation and Firebase integration.</p>
+        <a href="login-new.html" class="demo-btn">View Login</a>
+        <a href="register-new.html" class="demo-btn" style="margin-left: var(--spacing-sm);">View Register</a>
+      </div>
+
+      <div class="demo-card">
+        <span class="demo-card-icon">📊</span>
+        <h3 class="demo-card-title">Dashboard</h3>
+        <p class="demo-card-description">Comprehensive student dashboard with profile, units, and notifications sections.</p>
+        <a href="dashboard-new.html" class="demo-btn">View Dashboard</a>
+      </div>
+    </div>
+
+    <div class="demo-features">
+      <h2 class="demo-features-title">✨ Key Features</h2>
+      <div class="demo-features-grid">
+        <div class="demo-feature">
+          <span class="demo-feature-icon">🎨</span>
+          <div class="demo-feature-title">Modern Design</div>
+          <div class="demo-feature-description">Clean, professional interface with consistent styling</div>
+        </div>
+        <div class="demo-feature">
+          <span class="demo-feature-icon">📱</span>
+          <div class="demo-feature-title">Responsive</div>
+          <div class="demo-feature-description">Works perfectly on desktop, tablet, and mobile devices</div>
+        </div>
+        <div class="demo-feature">
+          <span class="demo-feature-icon">🧩</span>
+          <div class="demo-feature-title">Modular</div>
+          <div class="demo-feature-description">Reusable components and shared utilities</div>
+        </div>
+        <div class="demo-feature">
+          <span class="demo-feature-icon">♿</span>
+          <div class="demo-feature-title">Accessible</div>
+          <div class="demo-feature-description">WCAG compliant with keyboard navigation</div>
+        </div>
+        <div class="demo-feature">
+          <span class="demo-feature-icon">⚡</span>
+          <div class="demo-feature-title">Fast</div>
+          <div class="demo-feature-description">Optimized performance with minimal dependencies</div>
+        </div>
+        <div class="demo-feature">
+          <span class="demo-feature-icon">🔧</span>
+          <div class="demo-feature-title">Maintainable</div>
+          <div class="demo-feature-description">Clean code structure and comprehensive documentation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-grid">
+      <div class="demo-card">
+        <span class="demo-card-icon">🗂️</span>
+        <h3 class="demo-card-title">Project Structure</h3>
+        <p class="demo-card-description">Explore the organized file structure with components, utilities, and assets.</p>
+        <details>
+          <summary style="cursor: pointer; font-weight: 600; margin-bottom: var(--spacing-sm);">View Structure</summary>
+          <pre style="background: var(--light-gray); padding: var(--spacing-sm); border-radius: var(--border-radius-sm); font-size: 0.8rem; overflow-x: auto;">
+school-website/
+├── assets/css/main.css          # Design system
+├── components/                  # Reusable components
+├── utils/                       # Shared utilities
+├── index-new.html              # Landing page
+├── login-new.html              # Login page
+├── register-new.html           # Registration
+└── dashboard-new.html          # Main dashboard
+          </pre>
+        </details>
+      </div>
+
+      <div class="demo-card">
+        <span class="demo-card-icon">🚀</span>
+        <h3 class="demo-card-title">Getting Started</h3>
+        <p class="demo-card-description">Ready to use the new frontend? Here's how to get started.</p>
+        <div style="margin-top: var(--spacing-md);">
+          <div style="margin-bottom: var(--spacing-sm);">
+            <strong>1.</strong> Open <code>index-new.html</code> in your browser
+          </div>
+          <div style="margin-bottom: var(--spacing-sm);">
+            <strong>2.</strong> Register a new account or sign in
+          </div>
+          <div style="margin-bottom: var(--spacing-sm);">
+            <strong>3.</strong> Explore the dashboard features
+          </div>
+          <div>
+            <strong>4.</strong> Customize colors and content as needed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-footer">
+      <p><strong>School Portal Frontend</strong></p>
+      <p>Built with modern web technologies for the best user experience</p>
+      <p style="margin-top: var(--spacing-sm); font-size: var(--font-size-sm); opacity: 0.8;">
+        View the complete documentation in <a href="README.md" style="color: var(--primary-light);">README.md</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

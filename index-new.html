@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Portal - Welcome</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <!-- Inline styles for landing page specific styling -->
+  <style>
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: var(--text-white);
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 600px;
+      padding: var(--spacing-xxl);
+    }
+
+    .hero-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-xl);
+      margin-bottom: var(--spacing-xxl);
+      opacity: 0.9;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: var(--spacing-lg);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--spacing-lg);
+      padding: var(--spacing-xxl) 0;
+      background: var(--bg-primary);
+    }
+
+    .feature-card {
+      background: var(--bg-secondary);
+      padding: var(--spacing-xl);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-md);
+      display: block;
+    }
+
+    .feature-title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-primary);
+    }
+
+    .feature-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .stats-section {
+      background: var(--primary-color);
+      color: var(--text-white);
+      padding: var(--spacing-xxl) 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-label {
+      font-size: var(--font-size-lg);
+      opacity: 0.9;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: var(--font-size-2xl);
+      }
+
+      .hero-subtitle {
+        font-size: var(--font-size-lg);
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .feature-cards {
+        grid-template-columns: 1fr;
+        padding: var(--spacing-lg) 0;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to School Portal</h1>
+      <p class="hero-subtitle">Your gateway to academic excellence and seamless learning experience</p>
+
+      <div class="hero-actions">
+        <a href="login.html" class="btn btn-secondary">Sign In</a>
+        <a href="register.html" class="btn btn-outline">Get Started</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="feature-cards">
+    <div class="container">
+      <h2 style="text-align: center; margin-bottom: var(--spacing-xxl); color: var(--text-primary);">
+        Why Choose Our School Portal?
+      </h2>
+
+      <div class="feature-card">
+        <span class="feature-icon">🎓</span>
+        <h3 class="feature-title">Academic Excellence</h3>
+        <p class="feature-description">
+          Access comprehensive academic resources, track your progress, and achieve your educational goals with our integrated platform.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">📚</span>
+        <h3 class="feature-title">Easy Unit Registration</h3>
+        <p class="feature-description">
+          Register for your courses seamlessly with our intuitive unit registration system designed for student convenience.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <span class="feature-icon">👥</span>
+        <h3 class="feature-title">Student Community</h3>
+        <p class="feature-description">
+          Connect with fellow students, access support services, and be part of a vibrant learning community.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div>
+          <div class="stat-number" id="studentCount">0</div>
+          <div class="stat-label">Active Students</div>
+        </div>
+        <div>
+          <div class="stat-number" id="unitsCount">0</div>
+          <div class="stat-label">Available Units</div>
+        </div>
+        <div>
+          <div class="stat-number" id="successRate">98%</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background: var(--dark-gray); color: var(--text-white); padding: var(--spacing-lg); text-align: center;">
+    <div class="container">
+      <p>&copy; 2024 School Portal. All rights reserved.</p>
+      <p style="margin-top: var(--spacing-sm); opacity: 0.8;">
+        Built with modern web technologies for the best user experience.
+      </p>
+    </div>
+  </footer>
+
+  <!-- External JavaScript -->
+  <script src="utils/firebase-config.js"></script>
+  <script src="utils/database-service.js"></script>
+
+  <script>
+    // Load statistics
+    async function loadStatistics() {
+      try {
+        // Initialize Firebase
+        await window.FirebaseConfig.initializeFirebase();
+
+        // Load student count
+        const students = await window.DatabaseService.getCollection('students');
+        const studentCountElement = document.getElementById('studentCount');
+        if (studentCountElement) {
+          studentCountElement.textContent = students.length;
+        }
+
+        // Load units count
+        const units = await window.DatabaseService.getCollection('units');
+        const unitsCountElement = document.getElementById('unitsCount');
+        if (unitsCountElement) {
+          unitsCountElement.textContent = units.length;
+        }
+
+      } catch (error) {
+        console.error('Error loading statistics:', error);
+        // Set default values if there's an error
+        const studentCountElement = document.getElementById('studentCount');
+        const unitsCountElement = document.getElementById('unitsCount');
+        if (studentCountElement) studentCountElement.textContent = '100+';
+        if (unitsCountElement) unitsCountElement.textContent = '50+';
+      }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', loadStatistics);
+
+    // Add smooth scrolling for any internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

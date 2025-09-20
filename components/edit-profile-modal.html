@@ -1,0 +1,32 @@
+<!-- Edit Profile Modal Component -->
+<div id="editProfileModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Edit Profile</h3>
+      <button class="modal-close" onclick="UI.closeModal('editProfileModal')">&times;</button>
+    </div>
+    <form id="editProfileForm" onsubmit="handleProfileUpdate(event)">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editClass" class="form-label">Class</label>
+          <input type="text" id="editClass" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="editGender" class="form-label">Gender</label>
+          <select id="editGender" class="form-select" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editDob" class="form-label">Date of Birth</label>
+          <input type="date" id="editDob" class="form-input" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="UI.closeModal('editProfileModal')">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
